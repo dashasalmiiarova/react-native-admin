@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 import ButtonMain from './ButtonMain';
 import Spinner from './Spinner';
 import SignUpButton from './SignUpButton';
+import firebase from 'firebase';
 
 let customFonts = {
     'Avenir_Medium': require('../assets/fonts/Avenir/Avenir-Medium-09.ttf'),
@@ -31,39 +32,46 @@ export default class SignIn extends React.Component{
     getHandler = key => val => {
         this.setState({ [key]: val })
     }
-    handleSignin = async e => {
+    handleSignin = e => {
         e.preventDefault();
         this.setState({ error: '' });
         try{
-            await signin(this.state.email, this.state.password);
-            localStorage.setItem( auth().currentUser)
+            firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
+            // localStorage.setItem( auth().currentUser)
+            this.setState({ 
+                email: '',
+                password: '', })
             this.props.navigation.replace("Ekran początkowy");
+            
         } catch(error) {
             this.setState({ error: error.message });
         }
     }
-    handleSignup = async e => {
-        e.preventDefault();
-        this.setState({ error: '' });
-        try{
-            await signup(this.state.email, this.state.password);
-            this.props.navigation.replace("Ekran początkowy");
-        } catch(error) {
-            this.setState({ error: error.message });
-        }
-    }
+    // handleSignup = e => {
+    //     e.preventDefault();
+    //     this.setState({ error: '' });
+    //     try{
+    //         signup(this.state.email, this.state.password);
+    //         this.setState({ 
+    //             email: '',
+    //             password: '', })
+    //         this.props.navigation.replace("Ekran początkowy");
+    //     } catch(error) {
+    //         this.setState({ error: error.message });
+    //     }
+    // }
     render(){
         if(this.state.fontsLoaded){
             return(
                 <KeyboardAvoidingView behavior="padding" style={styles.container} ref="scroller" keyboardShouldPersistTaps={true} >
                     <TouchableWithoutFeedback onPress={ Keyboard.dismiss }>
                         <View style={styles.contentContainer}>
-                            <Text style={styles.mainText}>Zaloguj się lub zarejestruj się</Text>
+                            <Text style={styles.mainText}>Zaloguj się </Text>
                             <TextInput style={styles.input} placeholder='Email' value={this.state.email} onChangeText={ this.getHandler('email') } keyboardType='email-address' placeholderTextColor="#43425D" />
                             <TextInput style={styles.input} placeholder='Hasło' secureTextEntry={true} autoCorrect={false} value={this.state.password} onChangeText={ this.getHandler('password') } keyboardType='default' placeholderTextColor="#43425D" />
                                 { this.state.error ? <Text style={styles.danger}>{ this.state.error }</Text> : null }
                             <ButtonMain style={styles.buttonSubmit} title="Zaloguj się" onPress={ this.handleSignin } />
-                            <SignUpButton style={styles.buttonSubmit} title="Zarejestruj się" onPress={ this.handleSignup } />
+                            {/* <SignUpButton style={styles.buttonSubmit} title="Zarejestruj się" onPress={ this.handleSignup } /> */}
                         </View>
                     </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>

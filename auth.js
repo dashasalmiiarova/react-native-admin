@@ -11,5 +11,5 @@ export async function signin(email, password){
 }
 
 export function logout(){
-    return auth().signOut()
+    return auth().signOut();
 }

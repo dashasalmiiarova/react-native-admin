@@ -1,4 +1,4 @@
-import  * as firebase from 'firebase';
+import firebase from 'firebase';
 // import 'firebase/auth';
 
 var firebaseConfig = {
@@ -11,8 +11,9 @@ var firebaseConfig = {
     appId: "1:1081775839826:web:0f81980798fe7f95df5d8b"
   };
   // Initialize Firebase
+
   if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+    app = firebase.initializeApp(firebaseConfig);
  }
 
   export const auth = firebase.auth;

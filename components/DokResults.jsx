@@ -23,13 +23,16 @@ export default class DokResults extends React.Component{
         sp_phone: 0,
         first_time_true: 0,
         first_time_false: 0,
+        badanieCount: 0,
         count: 0,
+        odzial: [],
     }
     componentDidMount(){
         let data = [];
         let diagnoz = []
         let badanie = []
         let badanieName =[]
+        let odzial = []
         let first = []
         let hospital = []
         let place =[]
@@ -60,7 +63,6 @@ export default class DokResults extends React.Component{
             });
             
             data = data[0];
-            // console.log("Data:", data);
             data.map(item => {
                 item.badanie === false ? badanie_false++ : item.badanie === true ? badanie_true++ : undefined_t++
                 item.plec === 'Mężczyzna' ? men++ : item.plec === 'Kobieta' ? woman++ : undefined_t++
@@ -78,9 +80,13 @@ export default class DokResults extends React.Component{
                spotkanie.push(item.spotkanie)
                date_u.push(item.date_u)
                age.push(item.age)
+               odzial.push(item.odzial)
+               badanieName.push(badanieName.reduce((map, val) => { map[val] = (map[val] || 0) + 1; return map }, {} ))
+               diagnoz.push(diagnoz.reduce((map, val) => { map[val] = (map[val] || 0) + 1; return map }, {} ))
+               odzial.push(odzial.reduce((map, val) => { map[val] = (map[val] || 0) + 1; return map }, {} ))
             })
-
-            this.setState({ diagnoz: diagnoz })
+    
+            this.setState({ diagnoz: diagnoz[diagnoz.length - 1]  })
             // this.setState({ age: age })
             this.setState({ badanie: badanie })
             this.setState({ badanieName: badanieName })
@@ -103,16 +109,26 @@ export default class DokResults extends React.Component{
             this.setState({ sp_home: sp_home })
             this.setState({ first_time_false: first_time_false })
             this.setState({ first_time_true: first_time_true })
+            this.setState({ odzial: odzial[odzial.length - 1] })
+            this.setState({ badanieCount: badanieName[badanieName.length - 1] })
         })
     }
+
     render(){
+        let r = Object.keys(this.state.badanieCount).reduce((o,c,i) => {o[c] = o[c] ? o[c] + ", " + Object.values(this.state.badanieCount)[i]:Object.values(this.state.badanieCount)[i]; return o;}, {})
+        delete r["[object Object]"];
+        
+        delete this.state.diagnoz["[object Object]"];
+        delete this.state.odzial["[object Object]"];
+        // console.log(this.state.odzial);
+
         const data = {
             mens: [{ x: this.state.date_u[0], y: this.state.men }],
             woman: [{ x: this.state.date_u[0], y: this.state.woman }],
             first: [{ x:"Pierwszy raz", y: this.state.first_time_true },
                     { x:"Kolejny raz", y: this.state.first_time_false }]
         }
-
+       
         return(
             <ScrollView >
                 <View style={styles.container}>
@@ -136,7 +152,7 @@ export default class DokResults extends React.Component{
                     </View>
                     <View>
                         <Text>Pierwszy raz</Text>
-                        <VictoryPie width={350}
+                        <VictoryPie width={350} height={350}
                         labelComponent={<VictoryLabel
                             textAnchor="middle"
                             style={{ fontSize: 20, fill: "white" }}
@@ -151,8 +167,137 @@ export default class DokResults extends React.Component{
                                 centerTitle
                                 orientation="horizontal"
                                 gutter={20}
+                                height={50}
                                 data={[ { name: 'Pierwszy raz', symbol: { fill: 'blue', }, }, { name: 'Kolejny raz', symbol: { fill: 'orange', }, },  ]}
                             />
+                    </View>
+                    <View>
+                        <Text>Skierowano na badanie</Text>
+                        <VictoryPie width={350} height={350}
+                        labelComponent={<VictoryLabel
+                            textAnchor="middle"
+                            style={{ fontSize: 20, fill: "white" }}
+                            />}
+                            style={{ labelComponent: { fontSize: 20, fill: "white" } }}
+                            innerRadius={68} labelRadius={100}
+                         data={[
+                            { x: this.state.badanie_true, y: this.state.badanie_true },
+                            { x: this.state.badanie_false, y: this.state.badanie_false },
+                        ]} />
+                         <VictoryLegend 
+                                centerTitle
+                                orientation="horizontal"
+                                gutter={20}
+                                height={50}
+                                data={[ { name: 'Pierwszy raz', symbol: { fill: 'blue', }, }, { name: 'Kolejny raz', symbol: { fill: 'orange', }, },  ]}
+                            />
+                            <View style={ styles.badanieList }>
+                                {Object.entries(r).map(item => (
+                                    <Text> { item[0] } : { item[1] } </Text>
+                                ))}
+                            </View>
+                    </View>
+                    <View>
+                        <Text>Skąd pacjent</Text>
+                        <VictoryPie width={350} height={350}
+                            labelComponent={<VictoryLabel
+                            textAnchor="middle"
+                            style={{ fontSize: 20, fill: "white" }}
+                            />}
+                            style={{ labelComponent: { fontSize: 20, fill: "white" } }}
+                            innerRadius={68} labelRadius={100}
+                            data={[
+                                { x: this.state.placeCity, y: this.state.placeCity },
+                                { x: this.state.placeVillage, y: this.state.placeVillage },
+                        ]} />
+                         <VictoryLegend 
+                                centerTitle
+                                orientation="horizontal"
+                                gutter={20}
+                                height={50}
+                                data={[ { name: 'Miasto', symbol: { fill: 'blue', }, }, { name: 'Wieś', symbol: { fill: 'orange', }, },  ]}
+                            />
+                    </View>
+                    <View>
+                        <Text>Kontakt</Text>
+                        <VictoryPie width={350} height={350}
+                            style={{ labels: { display: "none" } }}
+                            // labelComponent={<VictoryLabel
+                            // textAnchor="middle"
+                            // style={{ fontSize: 20, fill: "white" }}
+                            // />}
+                            // style={{ labelComponent: { fontSize: 20, fill: "white" } }}
+                            // innerRadius={68} labelRadius={100}
+                            data={[
+                                { x: this.state.sp_stac, y:this.state.sp_stac, label:'Stacjonarnie' },
+                                { x: this.state.sp_phone, y: this.state.sp_phone, label:'Telefonicznie' },
+                                { x: this.state.sp_home, y: this.state.sp_home, label: 'Zdalnie' },
+                        ]} />
+                         <VictoryLegend 
+                                centerTitle
+                                orientation="horizontal"
+                                gutter={20}
+                                height={50}
+                                data={[ { name: 'Stacjonarnie', symbol: { fill: 'blue', }, }, { name: 'Telefonicznie', symbol: { fill: 'orange', }, }, { name: 'Zdalnie', symbol: { fill: 'orange', }, },  ]}
+                            />
+                    </View>
+                    <View>
+                        <Text>Hospitalizacja</Text>
+                        <VictoryPie width={350} height={350}
+                            // style={{ labels: { display: "none" } }}
+                            // labelComponent={<VictoryLabel
+                            // textAnchor="middle"
+                            // style={{ fontSize: 20, fill: "white" }}
+                            // />}
+                            // style={{ labelComponent: { fontSize: 20, fill: "white" } }}
+                            // innerRadius={68} labelRadius={100}
+                            data={[
+                                { x: this.state.hospital_second, y:this.state.hospital_second },
+                                { x: this.state.hospital_false, y: this.state.hospital_false },
+                        ]} />
+                         <VictoryLegend 
+                                centerTitle
+                                orientation="horizontal"
+                                gutter={20}
+                                height={50}
+                                data={[ { name: 'Skierowanoe', symbol: { fill: 'blue', }, }, { name: 'Nie skierowano', symbol: { fill: 'orange', }, },  ]}
+                            />
+                    </View>
+                    <View>
+                        <Text>Hospitalizacja</Text>
+                        <VictoryPie width={350} height={350}
+                            // style={{ labels: { display: "none" } }}
+                            // labelComponent={<VictoryLabel
+                            // textAnchor="middle"
+                            // style={{ fontSize: 20, fill: "white" }}
+                            // />}
+                            // style={{ labelComponent: { fontSize: 20, fill: "white" } }}
+                            // innerRadius={68} labelRadius={100}
+                            data={[
+                                { x: this.state.hospital_second, y:this.state.hospital_second },
+                                { x: this.state.hospital_false, y: this.state.hospital_false },
+                        ]} />
+                         <VictoryLegend 
+                                centerTitle
+                                orientation="horizontal"
+                                gutter={20}
+                                height={50}
+                                data={[ { name: 'Skierowanoe', symbol: { fill: 'blue', }, }, { name: 'Nie skierowano', symbol: { fill: 'orange', }, },  ]}
+                            />
+                    </View>
+                    <View>
+                        <Text>Diagnoz</Text>
+                        {
+                            Object.entries(this.state.diagnoz).map(item => (
+                                <Text>{ item[0] }: { item[1] }</Text>
+                            ))
+                        }
+                        <Text>Ilość pacjętów</Text>
+                        {
+                            Object.entries(this.state.odzial).map(item => (
+                                <Text> { item[0] }: {item[1]} </Text>
+                            ))
+                        }
                     </View>
                 </View>
             </ScrollView>
@@ -165,5 +310,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    badanieList: {
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+    },
 })

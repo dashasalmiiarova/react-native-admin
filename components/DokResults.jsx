@@ -150,7 +150,7 @@ export default class DokResults extends React.Component{
                             />
                         </VictoryChart>
                     </View>
-                    <View>
+                    <View style={styles.dataView}>
                         <Text style={ styles.plainText }>Skąd pacjent</Text>
                         <VictoryPie width={350} height={350}
                             labelComponent={<VictoryLabel
@@ -172,7 +172,7 @@ export default class DokResults extends React.Component{
                                 data={[ { name: 'Wieś', symbol: { fill: '#2CD889', }, }, { name: 'Miasto', symbol: { fill: '#7EE8B8', }, },   ]}
                             />
                     </View>
-                    <View>
+                    <View style={styles.dataView}>
                         <Text style={ styles.plainText }>Pierwszy raz</Text>
                         <VictoryPie width={350} height={350}
                         labelComponent={<VictoryLabel
@@ -204,7 +204,7 @@ export default class DokResults extends React.Component{
                             </View>
                     </View>
                     
-                    <View>
+                    <View style={styles.dataView}>
                         <Text style={ styles.plainText }>Kontakt</Text>
                         <VictoryChart  width={350}  theme={VictoryTheme.material}>
                             <VictoryAxis label="Sposób" style={{ axisLabel: {  padding: 30, fontSize: 14, fontWeight: '600', display: 'none' } }} />
@@ -216,7 +216,7 @@ export default class DokResults extends React.Component{
                             </VictoryGroup>
                         </VictoryChart>
                     </View>
-                    <View>
+                    <View style={styles.dataView}>
                         <Text style={ styles.plainText }>Hospitalizacja</Text>
                         <VictoryPie width={350} height={350}
                             colorScale={["#2ec4b6", "#cbf3f0" ]}
@@ -237,7 +237,7 @@ export default class DokResults extends React.Component{
                         <View style={ styles.diagnozList }>
                             {
                                 Object.entries(this.state.diagnoz).map(item => (
-                                    <Text style={ styles.justText }>{ item[0] }: { item[1] }</Text>
+                                    <Text key={item[0]} style={ styles.justText }>{ item[0] }: { item[1] }</Text>
                                 ))
                             }
                         </View>
@@ -245,7 +245,7 @@ export default class DokResults extends React.Component{
                         <View style={ styles.oddzialList }>
                         {
                             Object.entries(this.state.odzial).map(item => (
-                                <Text style={ styles.justText }> { item[0] }: {item[1]} </Text>
+                                <Text key={item[0]} style={ styles.justText }> { item[0] }: {item[1]} </Text>
                             ))
                         }
                         </View>
@@ -283,8 +283,10 @@ const styles = StyleSheet.create({
     plainText: {
         paddingLeft: 20,
         marginBottom: 20,
-        fontSize: 16,
-        fontWeight: '600'
+        fontSize: 18,
+        fontWeight: '600',
+        textAlign: 'center',
+        marginTop: 20
     },
     justText: {
         fontSize: 15,
@@ -308,4 +310,7 @@ const styles = StyleSheet.create({
         color: "#20232a",
         backgroundColor: '#f3e2d1',
     },
+    dataView: {
+        width: '80%'
+    }
 })

@@ -90,35 +90,35 @@ export default class LabResults extends React.Component{
                                     data={[ { name: 'Kobiety', symbol: { fill: '#f2c1b7', }, },  { name: 'Mężczyźni', symbol: { fill: '#15386a', }, }, ]}
                                 />
                             </VictoryChart>
-                        </View>
-                        <View>
-                        <Text style={ styles.plainText }>Szybkie badanie</Text>
-                        <VictoryPie width={350} height={350}
-                            labelComponent={<VictoryLabel
-                            textAnchor="middle"
-                            style={{ fontSize: 20, fill: "white" }}
-                            />}
-                            style={{ labelComponent: { fontSize: 20, fill: "white" } }}
-                            innerRadius={68} labelRadius={100}
-                            colorScale={["#7EE8B8", "#2CD889" ]}
-                         data={[
-                            { x: this.state.speed_true, y: this.state.speed_true },
-                            { x: this.state.speed_false, y: this.state.speed_false },
-                        ]} />
-                         <VictoryLegend 
-                                centerTitle
-                                orientation="horizontal"
-                                gutter={20}
-                                height={50}
-                                data={[ { name: 'Normalny', symbol: { fill: '#2CD889', }, },  { name: 'Szybki test', symbol: { fill: '#7EE8B8', }, }, ]}
-                            />
+                    </View>
+                    <View style={styles.dataView}>
+                            <Text style={ styles.plainText }>Szybkie badanie</Text>
+                            <VictoryPie width={350} height={350}
+                                labelComponent={<VictoryLabel
+                                textAnchor="middle"
+                                style={{ fontSize: 20, fill: "white" }}
+                                />}
+                                style={{ labelComponent: { fontSize: 20, fill: "white" } }}
+                                innerRadius={68} labelRadius={100}
+                                colorScale={["#7EE8B8", "#2CD889" ]}
+                            data={[
+                                { x: this.state.speed_true, y: this.state.speed_true },
+                                { x: this.state.speed_false, y: this.state.speed_false },
+                            ]} />
+                            <VictoryLegend 
+                                    centerTitle
+                                    orientation="horizontal"
+                                    gutter={20}
+                                    height={50}
+                                    data={[ { name: 'Normalny', symbol: { fill: '#2CD889', }, },  { name: 'Szybki test', symbol: { fill: '#7EE8B8', }, }, ]}
+                                />
                     </View>
                     <View style={ styles.viewBad }>
                         <Text style={ styles.plainText }>Badania</Text>
                         <View style={ styles.badanieList }>
                             {
                                 Object.entries(this.state.test).map(item => (
-                                    <Text>{ item[0] }: { item[1] }</Text>
+                                    <Text key={item[0]}>{ item[0] }: { item[1] }</Text>
                                 ))
                             }
                         </View>
@@ -126,7 +126,7 @@ export default class LabResults extends React.Component{
                         <View style={ styles.oddzialList }>
                         {
                             Object.entries(this.state.oddzial).map(item => (
-                                <Text> { item[0] }: {item[1]} </Text>
+                                <Text key={item[0]}> { item[0] }: {item[1]} </Text>
                             ))
                         }
                         </View>
@@ -177,5 +177,8 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         color: "#20232a",
         backgroundColor: '#f3e2d1',
+    },
+    dataView: {
+        width: '80%'
     }
 })
